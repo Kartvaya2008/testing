@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Queue Eliminator · Premium Glass UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(circle at 10% 20%,rgba(31,58,30,.08) 0%,transparent 70%),linear-gradient(135deg,#E8EDE6,#F0F4EF);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1a2a1a;line-height:1.5;min-height:100vh}
+#c{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{max-width:1280px;margin:0 auto;padding:3rem 2rem 5rem;position:relative;z-index:2}
+.badge,.title,.sub,.line,.grid,.tech{opacity:0;animation:up .65s cubic-bezier(.2,.9,.4,1.1) forwards}
+.badge{animation-delay:.05s}.title{animation-delay:.1s}.sub{animation-delay:.15s}.line{animation-delay:.2s}.grid{animation-delay:.25s}.tech{animation-delay:.4s}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.badge{font-size:.7rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#1F3A1E;margin-bottom:.75rem}
+.title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;letter-spacing:-.02em;color:#0f2e1c;margin-bottom:.6rem}
+.sub{font-size:clamp(.9rem,1.5vw,1.05rem);color:#2c4a2c;max-width:580px;margin-bottom:1.2rem;font-weight:500}
+.line{width:60px;height:3px;background:#1F3A1E;border-radius:4px;margin-bottom:2.8rem}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:1rem}
+.card{position:relative;background:rgba(255,255,255,.13);backdrop-filter:blur(11px) saturate(140%);-webkit-backdrop-filter:blur(11px) saturate(140%);border-radius:32px;box-shadow:0 12px 28px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.2);transition:all .35s cubic-bezier(.2,.9,.4,1.1);overflow:hidden;border:1px solid rgba(255,255,255,.35)}
+.card:hover{transform:translateY(-8px) scale(1.01);background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.6);box-shadow:0 24px 36px -12px rgba(31,58,30,.3),0 12px 28px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.4)}
+.card::before{content:'';position:absolute;inset:0;border-radius:32px;padding:1px;background:radial-gradient(circle at 30% 20%,rgba(255,255,240,.2),transparent 80%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.6;transition:opacity .3s ease}
+.card:hover::before{opacity:.9}
+.body{padding:1.8rem 1.5rem}
+.name{font-size:1.4rem;font-weight:700;letter-spacing:-.3px;margin-bottom:.4rem;color:#0a2a0a}
+.role{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1c4a1c}
+.div{width:40px;height:2px;background:rgba(31,58,30,.55);margin:.75rem 0 .9rem;border-radius:4px}
+.desc{font-size:.82rem;line-height:1.55;color:rgba(0,0,0,.82);font-weight:500;margin-bottom:1.5rem}
+.links{display:flex;flex-wrap:wrap;gap:.7rem}
+.links:empty{display:none}
+a.lnk{display:inline-flex;align-items:center;gap:.35rem;padding:.4rem 1rem;background:rgba(255,255,255,.45);backdrop-filter:blur(2px);border-radius:40px;font-size:.7rem;font-weight:600;text-decoration:none;color:#0f2e1c;transition:all .25s cubic-bezier(.2,.9,.4,1.1);border:1px solid rgba(31,58,30,.45)}
+a.lnk svg{width:11px;height:11px;stroke:#1F3A1E;stroke-width:2;fill:none;transition:transform .2s ease}
+a.lnk:hover{background:rgba(31,58,30,.2);border-color:#1F3A1E;transform:translateY(-2px) scale(1.02);box-shadow:0 4px 8px rgba(0,0,0,.05)}
+a.lnk:hover svg{transform:scale(1.05)}
+.tech{margin-top:4.5rem;padding:2rem;background:rgba(255,255,255,.14);backdrop-filter:blur(11px) saturate(140%);border-radius:48px;box-shadow:0 10px 24px rgba(0,0,0,.05);text-align:center;transition:all .35s cubic-bezier(.2,.9,.4,1.1);border:1px solid rgba(255,255,255,.35)}
+.tech:hover{background:rgba(255,255,255,.22);transform:translateY(-3px);box-shadow:0 18px 30px -12px rgba(31,58,30,.2)}
+.tt{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#0a2a0a;margin-bottom:1rem}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin:1.2rem 0 1rem}
+.tbadge{background:rgba(255,255,255,.35);backdrop-filter:blur(2px);border-radius:100px;padding:.45rem 1.3rem;font-size:.75rem;font-weight:600;color:#1F3A1E;border:1px solid rgba(255,255,255,.45);transition:all .25s cubic-bezier(.2,.9,.4,1.1)}
+.tbadge:hover{background:rgba(31,58,30,.15);border-color:#1F3A1E;transform:translateY(-2px) scale(1.02)}
+.apidesc{font-size:.85rem;color:rgba(0,0,0,.8);font-weight:500;max-width:700px;margin:1.2rem auto 0;line-height:1.55}
+.apidesc strong{color:#0f2e1c;font-weight:700}
+@media(max-width:1000px){.grid{gap:1.5rem}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr);gap:1.8rem}}
+@media(max-width:550px){.wrap{padding:2rem 1.2rem 4rem}.body{padding:1.5rem 1.2rem 1.4rem}.name{font-size:1.25rem}}
+@media(max-width:480px){.grid{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="wrap">
+  <div class="badge">OUR PEOPLE</div>
+  <h1 class="title">Meet the team</h1>
+  <p class="sub">The minds behind Queue Eliminator</p>
+  <div class="line"></div>
+
+  <div class="grid">
+    <div class="card"><div class="body">
+      <h3 class="name">Kartavya Raikwar</h3>
+      <div class="role">Frontend &amp; UI/UX</div>
+      <div class="div"></div>
+      <p class="desc">Complete frontend development, UI/UX design, animations, and overall website experience.</p>
+      <div class="links">
+        <a class="lnk" href="mailto:kartvayaraikwar@gmail.com"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email</a>
+        <a class="lnk" href="https://kartvaya2008.github.io/portfolio_website-/" target="_blank"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Portfolio</a>
+        <a class="lnk" href="https://www.linkedin.com/in/kartavya-raikwar-4940013a3" target="_blank"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> LinkedIn</a>
+        <a class="lnk" href="https://youtube.com/@kartvaya26-v?si=fKUqw2lIOyWJ-cJF" target="_blank"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg> YouTube</a>
+        <a class="lnk" href="https://github.com/Kartvaya2008" target="_blank"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> GitHub</a>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="body">
+      <h3 class="name">Youraj Verma</h3>
+      <div class="role">Backend &amp; Architect</div>
+      <div class="div"></div>
+      <p class="desc">Backend logic, APIs, system design, architecture, core idea and team leadership.</p>
+      <div class="links">
+        <a class="lnk" href="https://github.com/codex-yv" target="_blank"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> GitHub</a>
+        <a class="lnk" href="mailto:yourajverma960@gmail.com"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email</a>
+        <a class="lnk" href="https://www.linkedin.com/in/youraj-verma-929383317" target="_blank"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> LinkedIn</a>
+        <a class="lnk" href="https://instagram.com/y.o.u.r.a.j__v.e.r.m.a" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.363-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg> Instagram</a>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="body">
+      <h3 class="name">Raj Prajapati</h3>
+      <div class="role">Testing &amp; Optimization</div>
+      <div class="div"></div>
+      <p class="desc">Future contributions will be added here. Stay tuned for updates on their role and work.</p>
+      <div class="links">
+        <a class="lnk" href="#"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> GitHub</a>
+        <a class="lnk" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> LinkedIn</a>
+      </div>
+    </div></div>
+
+    <div class="card"><div class="body">
+      <h3 class="name">Shubham Tiwari</h3>
+      <div class="role">Contributor</div>
+      <div class="div"></div>
+      <p class="desc">Future contributions will be added here. Stay tuned for updates on their role and work.</p>
+      <div class="links">
+        <a class="lnk" href="#"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> GitHub</a>
+        <a class="lnk" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> LinkedIn</a>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="tech">
+    <div class="tt">Technology Stack & APIs</div>
+    <div class="badges">
+      <span class="tbadge">React / Next.js</span>
+      <span class="tbadge">Node.js</span>
+      <span class="tbadge">WebSockets (Live updates)</span>
+      <span class="tbadge">RESTful API</span>
+      <span class="tbadge">AI wait‑time predictor</span>
+      <span class="tbadge">QR code engine</span>
+    </div>
+    <div class="apidesc">
+      <strong>🗲 Queue Eliminator API Bagiya</strong> — A modular, real‑time backend that powers digital queues, live position tracking, and smart notifications.
+      Built for hospitals, banks, and government offices. Seamless integration with <strong>WebSocket streams</strong> and <strong>secure REST endpoints</strong>.
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  let W,H,P=[];
+  function init(){
+    W=cv.width=innerWidth;H=cv.height=innerHeight;P=[];
+    for(let i=0;i<180;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*3+1.2,a:Math.random()*.4+.2,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25});
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let p of P){
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(80,110,70,${p.a*.7})`;ctx.fill();
+      ctx.shadowBlur=6;ctx.shadowColor='rgba(100,130,80,.5)';ctx.fill();ctx.shadowBlur=0;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+    }
+    requestAnimationFrame(draw);
+  }
+  addEventListener('resize',init);
+  init();draw();
+})();
+</script>
+</body>
+</html>

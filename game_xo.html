@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Tic Tac Toe – Human-like AI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background: #f8f9f5;
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .game {
+      text-align: center;
+      background: #ffffff;
+      padding: 30px 20px 35px 20px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: #1e2a1c;
+      margin-bottom: 0.75rem;
+      font-family: inherit;
+    }
+
+    .status {
+      font-size: 1.25rem;
+      margin: 0.75rem 0 1.5rem 0;
+      padding: 0.4rem;
+      font-weight: 500;
+      color: #2d4a2c;
+      background: transparent;
+      min-width: 180px;
+    }
+
+    /* classic grid: black lines, light background */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+      border: 2px solid #1e2a1c;
+      aspect-ratio: 1 / 1;
+    }
+
+    .cell {
+      background-color: #ffffff;
+      border: 2px solid #1e2a1c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.8rem;
+      font-weight: 500;
+      font-family: monospace, 'Courier New', system-ui;
+      color: #1f3b1a;
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .cell:hover {
+      background-color: #f1f3ec;
+    }
+
+    .cell.disabled, .board.inactive .cell {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    button {
+      background: #2c4b2c;
+      border: none;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 500;
+      padding: 0.65rem 2rem;
+      margin-top: 1.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.05s linear;
+      border-radius: 0;
+      letter-spacing: 0.3px;
+    }
+
+    button:hover {
+      background: #1f3a1f;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    footer {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      color: #6a7865;
+    }
+
+    /* turn indicator subtle */
+    .status {
+      border-bottom: 1px solid #dadbd2;
+      display: inline-block;
+      padding-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="game">
+  <h1>Tic Tac Toe</h1>
+  <div class="status" id="gameStatus">Your turn</div>
+  <div class="board" id="board"></div>
+  <button id="restartBtn">New game</button>
+  <footer>X = You &nbsp;&nbsp;|&nbsp;&nbsp; O = AI</footer>
+</div>
+
+<script>
+  (function(){
+    // ---------- DOM elements ----------
+    const boardContainer = document.getElementById('board');
+    const statusDiv = document.getElementById('gameStatus');
+    const restartBtn = document.getElementById('restartBtn');
+
+    // ---------- Game state ----------
+    let board = Array(9).fill(null);     // null = empty, 'X' = player, 'O' = AI
+    let gameActive = true;
+    let currentTurn = 'player';          // player starts with 'X'
+    let aiTimeout = null;
+    let isAIPlaying = false;             // lock to avoid duplicate AI calls
+
+    // Win patterns (8 lines)
+    const winPatterns = [
+      [0,1,2], [3,4,5], [6,7,8],  // rows
+      [0,3,6], [1,4,7], [2,5,8],  // columns
+      [0,4,8], [2,4,6]            // diagonals
+    ];
+
+    let cellElements = [];
+
+    // ---------- Helper functions ----------
+    function getEmptyCells(boardState) {
+      return boardState.reduce((empty, cell, idx) => {
+        if (cell === null) empty.push(idx);
+        return empty;
+      }, []);
+    }
+
+    // check winner: returns 'X', 'O', or null
+    function checkWinner(boardState) {
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]) {
+          return boardState[a];
+        }
+      }
+      return null;
+    }
+
+    function isBoardFull(boardState) {
+      return boardState.every(cell => cell !== null);
+    }
+
+    function updateUI() {
+      for (let i = 0; i < 9; i++) {
+        cellElements[i].textContent = board[i] || '';
+      }
+    }
+
+    function setBoardActive(active) {
+      if (active) {
+        boardContainer.classList.remove('inactive');
+      } else {
+        boardContainer.classList.add('inactive');
+      }
+    }
+
+    function setStatusMessage(msg) {
+      statusDiv.textContent = msg;
+    }
+
+    function endGame(winner) {
+      gameActive = false;
+      setBoardActive(false);
+      if (winner === 'X') {
+        setStatusMessage('You win!');
+      } else if (winner === 'O') {
+        setStatusMessage('AI wins!');
+      } else {
+        setStatusMessage('Draw!');
+      }
+    }
+
+    // ---------- AI decision helpers (human-like) ----------
+
+    // 1) SMART MOVE: win if possible, else block player, else optimal (center > corners > edges)
+    function getSmartMove(boardState) {
+      const empty = getEmptyCells(boardState);
+      if (empty.length === 0) return null;
+
+      // AI can win?
+      for (let idx of empty) {
+        const testBoard = [...boardState];
+        testBoard[idx] = 'O';
+        if (checkWinner(testBoard) === 'O') return idx;
+      }
+
+      // Block player win
+      for (let idx of empty) {
+        const testBoard = [...boardState];
+        testBoard[idx] = 'X';
+        if (checkWinner(testBoard) === 'X') return idx;
+      }
+
+      // Heuristic: take center if available
+      if (boardState[4] === null) return 4;
+
+      // take corners randomly (still good)
+      const corners = [0, 2, 6, 8];
+      const availableCorners = corners.filter(c => boardState[c] === null);
+      if (availableCorners.length > 0) {
+        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+      }
+
+      // take any edge
+      const edges = [1, 3, 5, 7];
+      const availableEdges = edges.filter(e => boardState[e] === null);
+      if (availableEdges.length > 0) {
+        return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+      }
+
+      // fallback random
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    // 2) NORMAL MOVE: casual human-like, does not actively block or try to win.
+    //    Prefers center with moderate chance, then corners, then edges.
+    //    No explicit blocking/winning logic – feels natural.
+    function getNormalMove(boardState) {
+      const empty = getEmptyCells(boardState);
+      if (empty.length === 0) return null;
+
+      // 35% chance to take center if available (humans like center but not always)
+      if (boardState[4] === null && Math.random() < 0.35) {
+        return 4;
+      }
+
+      // corners are attractive: 50% chance to pick a random corner if available
+      const corners = [0, 2, 6, 8];
+      const availableCorners = corners.filter(c => boardState[c] === null);
+      if (availableCorners.length > 0 && Math.random() < 0.6) {
+        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+      }
+
+      // edges (side cells)
+      const edges = [1, 3, 5, 7];
+      const availableEdges = edges.filter(e => boardState[e] === null);
+      if (availableEdges.length > 0) {
+        return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+      }
+
+      // final fallback: any random empty cell
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    // 3) RANDOM MISTAKE: picks any empty cell (could be terrible move)
+    function getRandomMistake(boardState) {
+      const empty = getEmptyCells(boardState);
+      if (empty.length === 0) return null;
+      const randIndex = Math.floor(Math.random() * empty.length);
+      return empty[randIndex];
+    }
+
+    // Main AI decision using probability distribution:
+    // 40% smart (win/block/optimal), 40% normal (casual, not perfect), 20% random mistake
+    function getAIMove(boardState) {
+      const r = Math.random();
+      if (r < 0.4) {
+        // smart move
+        return getSmartMove(boardState);
+      } else if (r < 0.8) {
+        // normal move (human-like without perfect reasoning)
+        return getNormalMove(boardState);
+      } else {
+        // random mistake
+        return getRandomMistake(boardState);
+      }
+    }
+
+    // ---------- AI move with delay (400–900ms) ----------
+    function aiMoveWithDelay() {
+      if (!gameActive || currentTurn !== 'ai') return;
+      if (isAIPlaying) return;
+      isAIPlaying = true;
+      setBoardActive(false);
+      setStatusMessage('AI is thinking...');
+
+      const delay = Math.floor(Math.random() * 500) + 400; // 400-900ms
+
+      aiTimeout = setTimeout(() => {
+        // re-check game state (could have been reset or ended)
+        if (!gameActive || currentTurn !== 'ai') {
+          isAIPlaying = false;
+          return;
+        }
+
+        const emptyCells = getEmptyCells(board);
+        if (emptyCells.length === 0) {
+          // board full but no winner? then draw
+          if (isBoardFull(board) && !checkWinner(board)) {
+            endGame(null);
+          }
+          isAIPlaying = false;
+          return;
+        }
+
+        // get AI move based on human-like probability system
+        let aiIndex = getAIMove(board);
+        // safety: ensure move is valid
+        if (aiIndex === null || board[aiIndex] !== null) {
+          const fallback = getEmptyCells(board);
+          if (fallback.length) aiIndex = fallback[Math.floor(Math.random() * fallback.length)];
+          else {
+            isAIPlaying = false;
+            return;
+          }
+        }
+
+        // apply AI move
+        board[aiIndex] = 'O';
+        updateUI();
+
+        // check win/draw after AI move
+        const winner = checkWinner(board);
+        if (winner === 'O') {
+          endGame('O');
+          isAIPlaying = false;
+          return;
+        }
+        if (isBoardFull(board)) {
+          endGame(null);
+          isAIPlaying = false;
+          return;
+        }
+
+        // switch turn to player
+        currentTurn = 'player';
+        setBoardActive(true);
+        setStatusMessage('Your turn');
+        isAIPlaying = false;
+        aiTimeout = null;
+      }, delay);
+    }
+
+    // ---------- Player move ----------
+    function playerMove(cellIndex) {
+      if (!gameActive) return false;
+      if (currentTurn !== 'player') return false;
+      if (board[cellIndex] !== null) return false;
+
+      // place player mark (X)
+      board[cellIndex] = 'X';
+      updateUI();
+
+      // check win/draw after player move
+      const winner = checkWinner(board);
+      if (winner === 'X') {
+        endGame('X');
+        return true;
+      }
+      if (isBoardFull(board)) {
+        endGame(null);
+        return true;
+      }
+
+      // switch turn to AI
+      currentTurn = 'ai';
+      setStatusMessage('AI is thinking...');
+      setBoardActive(false);   // disable board while AI "thinks"
+
+      // cancel any previous timeout just in case
+      if (aiTimeout) clearTimeout(aiTimeout);
+      aiMoveWithDelay();
+      return true;
+    }
+
+    // ---------- UI creation ----------
+    function buildBoardUI() {
+      boardContainer.innerHTML = '';
+      cellElements = [];
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.setAttribute('data-index', i);
+        cell.addEventListener('click', (function(idx) {
+          return function() { playerMove(idx); };
+        })(i));
+        boardContainer.appendChild(cell);
+        cellElements.push(cell);
+      }
+    }
+
+    // ---------- Reset game (restart) ----------
+    function resetAndStart() {
+      // cancel any pending AI move
+      if (aiTimeout) {
+        clearTimeout(aiTimeout);
+        aiTimeout = null;
+      }
+      isAIPlaying = false;
+      board = Array(9).fill(null);
+      gameActive = true;
+      currentTurn = 'player';      // player always starts
+      updateUI();
+      setBoardActive(true);
+      setStatusMessage('Your turn');
+      // remove possible inactive leftover
+      boardContainer.classList.remove('inactive');
+    }
+
+    // restart button listener
+    restartBtn.addEventListener('click', () => {
+      resetAndStart();
+    });
+
+    // initialise game
+    buildBoardUI();
+    resetAndStart();
+  })();
+</script>
+</body>
+</html>

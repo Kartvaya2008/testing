@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queue Eliminator — Paper UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Rye&family=Permanent+Marker&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f0ebe0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    font-family: 'Special Elite', monospace;
+  }
+
+  .paper-card {
+    background: #faf7f0;
+    border: 3px solid #1a1a1a;
+    border-radius: 4px;
+    max-width: 780px;
+    width: 100%;
+    padding: 3rem 2.5rem 2.5rem;
+    position: relative;
+    box-shadow: 6px 6px 0 #1a1a1a;
+  }
+
+  .paper-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg, #1a1a1a 0px, #1a1a1a 18px,
+      transparent 18px, transparent 22px
+    );
+  }
+
+  .stamp-banner {
+    border: 3px solid #1a1a1a;
+    background: #1a1a1a;
+    color: #faf7f0;
+    text-align: center;
+    padding: 0.6rem 1.5rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 2.5rem;
+    display: inline-block;
+    transform: rotate(-1.5deg);
+    margin-left: 0.5rem;
+  }
+
+  .eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #3d8b5a;
+    margin-bottom: 0.6rem;
+  }
+
+  .big-title {
+    font-family: 'Rye', serif;
+    font-size: clamp(3rem, 10vw, 6.5rem);
+    line-height: 1.0;
+    color: #1a1a1a;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  .big-title span { display: block; }
+
+  .divider-ink {
+    border: none;
+    border-top: 2.5px solid #1a1a1a;
+    margin: 1.4rem 0;
+  }
+
+  .sub-text {
+    font-family: 'Special Elite', monospace;
+    font-size: 1.05rem;
+    color: #3a3a3a;
+    line-height: 1.7;
+    margin-bottom: 1.6rem;
+    max-width: 520px;
+  }
+
+  .stat-block {
+    border: 2.5px solid #1a1a1a;
+    padding: 1.1rem 1.5rem;
+    display: inline-block;
+    background: #faf7f0;
+    margin-bottom: 1.8rem;
+    box-shadow: 4px 4px 0 #1a1a1a;
+  }
+
+  .stat-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .stat-number {
+    font-family: 'Rye', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: #1a1a1a;
+    line-height: 1;
+  }
+
+  .stat-number span { color: #2a7a4a; }
+
+  .story-lines {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #555;
+    line-height: 1.9;
+    margin-bottom: 2rem;
+  }
+
+  .story-lines p {
+    border-bottom: 1px dashed #c8c0b0;
+    padding-bottom: 2px;
+  }
+
+  .btn-enter {
+    font-family: 'Rye', serif;
+    font-size: 1.1rem;
+    color: #faf7f0;
+    background: #1a1a1a;
+    border: 2.5px solid #1a1a1a;
+    padding: 0.9rem 2.4rem;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    box-shadow: 4px 4px 0 #3d8b5a;
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: inline-block;
+  }
+
+  .btn-enter:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #3d8b5a;
+  }
+
+  .btn-enter:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #3d8b5a;
+  }
+
+  .deco-corners::before, .deco-corners::after {
+    content: '✦';
+    position: absolute;
+    font-size: 1.2rem;
+    color: #1a1a1a;
+    opacity: 0.18;
+  }
+  .deco-corners::before { bottom: 1.1rem; right: 1.4rem; }
+  .deco-corners::after  { bottom: 1.1rem; left: 1.4rem; }
+
+  .torn-bottom {
+    margin-top: 2.5rem;
+    height: 18px;
+    background: repeating-linear-gradient(
+      -45deg,
+      #faf7f0 0px, #faf7f0 8px,
+      transparent 8px, transparent 10px
+    );
+    border-top: 2.5px solid #1a1a1a;
+    opacity: 0.5;
+  }
+
+  .scroll-hint {
+    margin-top: 1.2rem;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  .arrow-down {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-right: 2px solid #aaa;
+    border-bottom: 2px solid #aaa;
+    transform: rotate(45deg);
+    margin-top: 4px;
+    animation: bob 1.4s ease-in-out infinite;
+  }
+
+  @keyframes bob {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50%       { transform: rotate(45deg) translateY(4px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="paper-card deco-corners">
+
+  <div class="stamp-banner">⚔ Waiting Has Been Defeated ⚔</div>
+
+  <div class="eyebrow">— The System Is Ready —</div>
+
+  <div class="big-title">
+    <span>Queue</span>
+    <span>Eliminator</span>
+  </div>
+
+  <hr class="divider-ink">
+
+  <p class="sub-text">
+    The queue is no longer a problem.<br>
+    It's a system you control. People used to stand,<br>
+    hours passing in silence. No more.
+  </p>
+
+  <div class="stat-block">
+    <span class="stat-label">Total Time Saved</span>
+    <div class="stat-number"><span>5,17,661+</span> minutes</div>
+  </div>
+
+  <div class="story-lines">
+    <p>People used to stand. Hours passed in silence.</p>
+    <p>Now, they simply walk in when it's their turn.</p>
+    <p>The chaos is gone. The system is in control.</p>
+    <p>And everything runs smoother than ever before.</p>
+  </div>
+
+  <button class="btn-enter">Enter the System →</button>
+
+  <div class="torn-bottom"></div>
+
+  <div class="scroll-hint">
+    Scroll to see how it works
+    <br>
+    <span class="arrow-down"></span>
+  </div>
+
+</div>
+
+</body>
+</html>
