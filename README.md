@@ -7,7 +7,7 @@ Elinity is a social connection and relationship-flourishing platform built aroun
 [![Frontend](https://img.shields.io/badge/frontend-React%2018%20%2B%20Vite-3b82f6)](#tech-stack)
 [![Backend](https://img.shields.io/badge/backend-FastAPI%20%2F%20Python%203.11-a855f7)](#tech-stack)
 [![Language](https://img.shields.io/badge/language-TypeScript%20%2F%20Python-informational)](#tech-stack)
-)
+
 
 ---
 
